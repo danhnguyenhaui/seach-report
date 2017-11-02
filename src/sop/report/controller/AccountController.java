@@ -1,6 +1,8 @@
 package sop.report.controller;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,8 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import sop.search.dao.AccountDAO;
+import sop.search.dao.ReportDAO;
 import sop.search.dao.impl.AccountDAOImpl;
+import sop.search.dao.impl.ReportDAOImpl;
+import sop.search.dto.ReportDTO;
 import sop.search.entities.Account;
+import sop.search.entities.Report;
 
 
 /**
@@ -32,7 +38,25 @@ public class AccountController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	    String action = request.getParameter("action");
+        switch (action)
+        {
+            case "login":
+                login(request, response);
+                
+                break;
+            case "my-report-list":
+                viewMyReportList(request, response);
+                break;
+            case "admin":
+                response.sendRedirect("http://localhost:8080/SearchReport/admin");
+                break;
+            case "editReport":
+                editReport(request, response);
+                break;
+            default:
+                break;
+        }
 	}
 
 	/**
@@ -41,18 +65,39 @@ public class AccountController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		doGet(request, response);
-		String action = request.getParameter("action");
-		switch (action)
-        {
-            case "login":
-                login(request, response);
-                break;
-            
-            default:
-                break;
-        }
+		
 	}
 
+	void editReport(HttpServletRequest request, HttpServletResponse response) {
+	    String reportID = request.getParameter("reportID");
+	    ReportDAO reportDAO = new ReportDAOImpl();
+	    Report report = reportDAO.findByReportID(Integer.parseInt(reportID));
+	    request.setAttribute("report", report);
+	    try {
+            request.getRequestDispatcher("view/edit-report.jsp").forward(request, response);
+        } catch (ServletException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	}
+	void viewMyReportList(HttpServletRequest request, HttpServletResponse response) {
+	    try {
+	        Account acc = (Account)request.getSession().getAttribute("ACCOUNT");
+	        ReportDAO reportDAO = new ReportDAOImpl();
+	        List<ReportDTO> list = reportDAO.findByAccountID(acc.getAccountID());
+	        request.setAttribute("myReportList", list);
+            request.getRequestDispatcher("view/my-report-list.jsp").forward(request, response);
+        } catch (ServletException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	}
+	
+
+	
 	void login(HttpServletRequest request, HttpServletResponse response) {
 	    AccountDAO accDAO = new AccountDAOImpl();
 	    HttpSession session = request.getSession();
@@ -61,7 +106,7 @@ public class AccountController extends HttpServlet {
 	    Account acc = accDAO.findByUsernameAndPassword(username, password);
 	    if(acc != null) {
 	        session.setAttribute("ACCOUNT", acc);
-	        System.out.println(acc);
+	        System.out.println((Account)session.getAttribute("ACCOUNT"));
 	        try {
                 response.sendRedirect("http://localhost:8080/SearchReport/");
             } catch (IOException e) {

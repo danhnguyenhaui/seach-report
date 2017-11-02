@@ -93,13 +93,13 @@
 					<div class="col-12">
 						<div class="card">
 							<div class="card-header">
-								<h4 class="card-title d-inline">Báo cáo nổi bật</h4>
+								<h4 class="card-title d-inline">Kết quả tìm kiếm</h4>
 								<a href="./category?view=highlight" class="float-right">Xem
 									thêm >></a>
 							</div>
 							<div class="card-body">
-								<c:if test="${highlightReportList ne null }">
-									<c:forEach items="${highlightReportList }" var="report">
+								<c:if test="${searchList ne null }">
+									<c:forEach items="${searchList }" var="report">
 										<div class="row my-2 mx-auto">
 											<div class="col-2">
 												<img class="pictureCover" src="./pictures/${report.pictureCoverFileCode }"
@@ -136,53 +136,6 @@
 						</div>
 					</div>
 					<!-- / col-12-->
-					<div class="col-12 mt-5">
-						<div class="card">
-							<div class="card-header">
-								<h4 class="card-title d-inline">Báo cáo mới nhất</h4>
-								<a href="./category?view=new" class="float-right">Xem thêm
-									>></a>
-							</div>
-							<div class="card-body">
-								<c:if test="${newReportList ne null }">
-									<c:forEach items="${newReportList }" var="report">
-										<div class="row my-2 mx-auto">
-											<div class="col-2">
-												<img class="pictureCover" src="${pageContext.request.contextPath}/pictures/${report.pictureCoverFileCode }"
-													alt="ảnh bìa">
-											</div>
-											<div class="col-10">
-												<a href=""><h5 class="paragraph">
-														<c:out value="${report.reportName }"></c:out>
-													</h5></a>
-
-												<div class="row mx-1">
-													<p class="paragraph">
-														<c:out value="${report.description }"></c:out>
-													</p>
-												</div>
-												<div class="row">
-													<img class="icon" src="./image/share-post-symbol.png">
-													<span><c:out value="${report.poster }"></c:out></span> <img
-														class="icon" src="./image/small-calendar.png"> <span><c:out
-															value="${report.dateOfPost }"></c:out></span> <img class="icon"
-														src="./image/eye.png"> <span><c:out
-															value="${report.numberOfView }"></c:out></span> <img
-														class="icon" src="./image/download-button.png"> <span><c:out
-															value="${report.numberOfDownload }"></c:out></span>
-												</div>
-											</div>
-										</div>
-										<div class="dropdown-divider"></div>
-										<!-- /row my-2 mx-auto -->
-									</c:forEach>
-								</c:if>
-
-							</div>
-							<!-- /card-body -->
-						</div>
-					</div>
-					<!--/ col-12 -->
 				</div>
 
 			</div>

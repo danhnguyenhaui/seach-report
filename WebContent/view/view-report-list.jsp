@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Trang chủ</title>
+<title>Xem báo cáo</title>
 <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="./css/style.css">
 </head>
@@ -30,8 +30,7 @@
 					href="http://localhost:8080/SearchReport/view/upload.jsp">Tải
 						lên</a></li>
 				<c:if test="${ sessionScope['ACCOUNT'].permission eq true}">
-					<li class="nav-item"><a class="nav-link"
-						href="http://localhost:8080/SearchReport/accountController?action=admin">Duyệt
+					<li class="nav-item"><a class="nav-link" href="http://localhost:8080/SearchReport/accountController?action=admin">Duyệt
 							báo cáo</a></li>
 				</c:if>
 			</c:if>
@@ -93,102 +92,58 @@
 					<div class="col-12">
 						<div class="card">
 							<div class="card-header">
-								<h4 class="card-title d-inline">Báo cáo nổi bật</h4>
-								<a href="./category?view=highlight" class="float-right">Xem
-									thêm >></a>
+								<c:if test="${categoryName ne null }">
+									<h4 class="card-title d-inline">
+										<c:out value="${categoryName }"></c:out>
+									</h4>
+								</c:if>
 							</div>
 							<div class="card-body">
-								<c:if test="${highlightReportList ne null }">
-									<c:forEach items="${highlightReportList }" var="report">
+								<c:if test="${list ne null }">
+									<c:forEach items="${list }" var="report">
 										<div class="row my-2 mx-auto">
 											<div class="col-2">
-												<img class="pictureCover" src="./pictures/${report.pictureCoverFileCode }"
-													alt="ảnh bìa">
+											<c:choose>
+												<c:when test="${report.pictureCoverFileCode ne null }">
+													<img class="pictureCover" src="./pictures/${report.pictureCoverFileCode }" alt="ảnh bìa">
+												</c:when>
+												<c:otherwise>
+													<img class="pictureCover" src="./image/600x400.png" alt="ảnh bìa">
+												</c:otherwise>
+											</c:choose>
+												
 											</div>
 											<div class="col-10">
-												<a href=""><h5 class="paragraph">
-														<c:out value="${report.reportName }"></c:out>
-													</h5></a>
+												<a href="">
+													<h5 class="paragraph"><c:out value="${report.reportName }"></c:out></h5>
+												</a>
 
 												<div class="row mx-1">
-													<p class="paragraph">
-														<c:out value="${report.description }"></c:out>
-													</p>
+													<p class="paragraph"><c:out value="${report.description }"></c:out>...</p>
 												</div>
 												<div class="row">
 													<img class="icon" src="./image/share-post-symbol.png">
-													<span><c:out value="${report.poster }"></c:out></span> <img
-														class="icon" src="./image/small-calendar.png"> <span><c:out
-															value="${report.dateOfPost }"></c:out></span> <img class="icon"
-														src="./image/eye.png"> <span><c:out
-															value="${report.numberOfView }"></c:out></span> <img
-														class="icon" src="./image/download-button.png"> <span><c:out
-															value="${report.numberOfDownload }"></c:out></span>
+													<span><c:out value="${report.poster }"></c:out></span> 
+													<img class="icon" src="./image/small-calendar.png"> 
+													<span><c:out value="${report.dateOfPost }"></c:out></span>
+													<img class="icon" src="./image/eye.png"> 
+													<span><c:out value="${report.numberOfView }"></c:out></span>
+													<img class="icon" src="./image/download-button.png">
+													<span><c:out value="${report.numberOfDownload }"></c:out></span>
 												</div>
 											</div>
 										</div>
-										<div class="dropdown-divider"></div>
-										<!-- /row my-2 mx-auto -->
+										<div class="dropdown-divider mx-5"></div>
+										<!--/row my-2 mx-auto-->
 									</c:forEach>
 								</c:if>
 							</div>
-							<!-- /card-body -->
 						</div>
 					</div>
-					<!-- / col-12-->
-					<div class="col-12 mt-5">
-						<div class="card">
-							<div class="card-header">
-								<h4 class="card-title d-inline">Báo cáo mới nhất</h4>
-								<a href="./category?view=new" class="float-right">Xem thêm
-									>></a>
-							</div>
-							<div class="card-body">
-								<c:if test="${newReportList ne null }">
-									<c:forEach items="${newReportList }" var="report">
-										<div class="row my-2 mx-auto">
-											<div class="col-2">
-												<img class="pictureCover" src="${pageContext.request.contextPath}/pictures/${report.pictureCoverFileCode }"
-													alt="ảnh bìa">
-											</div>
-											<div class="col-10">
-												<a href=""><h5 class="paragraph">
-														<c:out value="${report.reportName }"></c:out>
-													</h5></a>
-
-												<div class="row mx-1">
-													<p class="paragraph">
-														<c:out value="${report.description }"></c:out>
-													</p>
-												</div>
-												<div class="row">
-													<img class="icon" src="./image/share-post-symbol.png">
-													<span><c:out value="${report.poster }"></c:out></span> <img
-														class="icon" src="./image/small-calendar.png"> <span><c:out
-															value="${report.dateOfPost }"></c:out></span> <img class="icon"
-														src="./image/eye.png"> <span><c:out
-															value="${report.numberOfView }"></c:out></span> <img
-														class="icon" src="./image/download-button.png"> <span><c:out
-															value="${report.numberOfDownload }"></c:out></span>
-												</div>
-											</div>
-										</div>
-										<div class="dropdown-divider"></div>
-										<!-- /row my-2 mx-auto -->
-									</c:forEach>
-								</c:if>
-
-							</div>
-							<!-- /card-body -->
-						</div>
-					</div>
-					<!--/ col-12 -->
 				</div>
-
 			</div>
 		</div>
 	</div>
-	<!-- Footer -->
 	<footer class="py-5 bg-faded">
 	<div class="container">
 		<p class="m-0 text-center text-info">Copyright &copy; Danh Nguyen
@@ -198,6 +153,5 @@
 	<script type="text/javascript" src="./js/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/popper.min.js"></script>
 	<script type="text/javascript" src="./js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="./js/script.js"></script>
 </body>
 </html>

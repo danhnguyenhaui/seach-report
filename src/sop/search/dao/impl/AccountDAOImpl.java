@@ -52,7 +52,7 @@ public class AccountDAOImpl implements AccountDAO
                 acc.setUsername(result.getString("username"));
                 acc.setPassword(result.getString("password"));
                 acc.setEmail(result.getString("email"));
-                acc.setPermisson(result.getBoolean("permission"));
+                acc.setPermission(result.getBoolean("permission"));
                 acc.setFullname(result.getString("fullname"));
             }
         } catch (SQLException e) {
@@ -79,8 +79,10 @@ public class AccountDAOImpl implements AccountDAO
                 acc.setUsername(result.getString("username"));
                 acc.setPassword(result.getString("password"));
                 acc.setEmail(result.getString("email"));
-                acc.setPermisson(result.getBoolean("permission"));
+                acc.setPermission(result.getBoolean("permission"));
                 acc.setFullname(result.getString("fullname"));
+                
+                
             }
         } catch (SQLException e) {
             acc = null;
