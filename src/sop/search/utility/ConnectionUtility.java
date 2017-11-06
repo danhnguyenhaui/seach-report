@@ -32,6 +32,7 @@ public class ConnectionUtility
     private PreparedStatement sqlFindReportByAccountID;
     private PreparedStatement sqlFindReportByActive;
     private PreparedStatement sqlFindReportByReportNameAndDescription;
+    private PreparedStatement sqlFindReportDTOByReportID;
     
     public ConnectionUtility()
     {
@@ -102,6 +103,13 @@ public class ConnectionUtility
                             + " document_file_code = ?, picture_cover_file_code = ?,"
                             + " extension = ?, version = ?, active = ?"
                             + " WHERE version_id = ?");
+            sqlFindReportDTOByReportID = connection.prepareStatement(
+                    "select * from report, version, account, category where "
+                            + "report.report_id = version.report_id" 
+                            + " AND report.account_id = account.account_id"
+                            + " AND report.category_id = category.category_id"
+                            + " AND version.active = true"
+                            + " AND report.report_id = ?");
             
             connection.setAutoCommit(false);
             
@@ -135,12 +143,17 @@ public class ConnectionUtility
             sqlRemoveVersionByReportIDAndOlderVersion.close();
             sqlFindVersionByVersionID.close();
             sqlUpdateVersion.close();
+            sqlFindReportDTOByReportID.close();
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
+    public PreparedStatement getSqlFindReportDTOByReportID()
+    {
+        return sqlFindReportDTOByReportID;
+    }
     public PreparedStatement getSqlUpdateVersion()
     {
         return sqlUpdateVersion;

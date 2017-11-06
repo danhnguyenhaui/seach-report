@@ -16,6 +16,7 @@ public interface ReportDAO
     Report findLastestReport();
     void insert(Report report);
     void update(Report report);
+    ReportDTO findByReportDTOID(int reportID);
     List<ReportDTO> orderByQuery(String query);
     List<ReportDTO> findByReportNameAndDescription(String repportName, String description);
 }

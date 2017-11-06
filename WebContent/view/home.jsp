@@ -101,12 +101,12 @@
 								<c:if test="${highlightReportList ne null }">
 									<c:forEach items="${highlightReportList }" var="report">
 										<div class="row my-2 mx-auto">
-											<div class="col-2">
+											<div class="col-2 px-0">
 												<img class="pictureCover" src="./pictures/${report.pictureCoverFileCode }"
 													alt="ảnh bìa">
 											</div>
 											<div class="col-10">
-												<a href=""><h5 class="paragraph">
+												<a href="http://localhost:8080/SearchReport/ReportController?action=viewReportDetail&reportID=${report.reportID }"><h5 class="paragraph">
 														<c:out value="${report.reportName }"></c:out>
 													</h5></a>
 
@@ -147,12 +147,12 @@
 								<c:if test="${newReportList ne null }">
 									<c:forEach items="${newReportList }" var="report">
 										<div class="row my-2 mx-auto">
-											<div class="col-2">
+											<div class="col-2 px-0">
 												<img class="pictureCover" src="${pageContext.request.contextPath}/pictures/${report.pictureCoverFileCode }"
 													alt="ảnh bìa">
 											</div>
 											<div class="col-10">
-												<a href=""><h5 class="paragraph">
+												<a href="http://localhost:8080/SearchReport/ReportController?action=viewReportDetail&reportID=${report.reportID }"><h5 class="paragraph">
 														<c:out value="${report.reportName }"></c:out>
 													</h5></a>
 

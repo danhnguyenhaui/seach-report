@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -38,7 +39,9 @@ public class FileUtility
                     }else {
                         pathName+= "documents\\" + version.getDocumentFileCode();
                     }
-                    item.write(new File(pathName));
+                    File file = new File(pathName);
+                    item.write(file);
+                    
                     System.out.println("UPLOAD FILE AT: " + pathName);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -58,7 +61,7 @@ public class FileUtility
                         suffix = suffix.substring(suffix.indexOf("."));
                     }
                     
-                    if("doc".equals(suffix) || ".docx".equals(suffix) || ".pdf".equals(suffix)) {
+                    if("doc".equalsIgnoreCase(suffix) || ".docx".equalsIgnoreCase(suffix) || ".pdf".equalsIgnoreCase(suffix)) {
                         return suffix;
                     }
                 } catch (Exception e) {
@@ -73,10 +76,10 @@ public class FileUtility
     public static void download(HttpServletResponse response, String fileName) throws IOException{
         String pathName = ServletContextListennerImpl
                 .context.getRealPath("/") + "\\documents\\" + fileName;
-        PrintWriter out = response.getWriter();
+        OutputStream out = response.getOutputStream();
         try {
             FileInputStream fis = new FileInputStream(pathName);
-            response.setContentType("APPLICATION/OCTET-STREAM");
+            response.setContentType("application/octet-stream");
             response.setHeader("Content-DisPosition"
                     , "attachment;filename="+ fileName);
             int i;

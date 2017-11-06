@@ -24,6 +24,7 @@ public class AccountDAOImpl implements AccountDAO
             try {
                 boolean check = connection.getSqlSaveAccount().execute();
                 connection.commit();
+                System.out.println(account);
                 return check;
             } catch (SQLException e) {
                 e.printStackTrace();

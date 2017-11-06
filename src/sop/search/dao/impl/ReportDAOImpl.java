@@ -282,4 +282,37 @@ public class ReportDAOImpl implements ReportDAO
         }
         return list;
     }
+
+    @Override
+    public ReportDTO findByReportDTOID(int reportID)
+    {
+        ReportDTO report = new ReportDTO();
+        connect = new ConnectionUtility();
+        try {
+            connect.getSqlFindReportDTOByReportID().setInt(1, reportID);
+            ResultSet result = connect.getSqlFindReportDTOByReportID().executeQuery();
+            if (result.next()) {
+                report.setDateOfPost(result.getDate("date_of_post"));
+                report.setDescription(result.getString("description"));
+                report.setDocumentFileCode(result.getString("document_file_code"));
+                report.setNumberOfDownload(result.getInt("number_of_download"));
+                report.setNumberOfView(result.getInt("number_of_view"));
+                report.setPictureCoverFileCode(result.getString("picture_cover_file_code"));
+                report.setPoster(result.getString("fullname"));
+                report.setReportID(result.getInt("report.report_id"));
+                report.setReportName(result.getString("reportname"));
+                report.setVersion(result.getInt("version"));
+                report.setVersionID(result.getInt("version_id"));
+                report.setCategoryName(result.getString("category_name"));
+                report.setActive(result.getBoolean("active"));
+                
+            }
+        } catch (SQLException e) {
+            report = null;
+            e.printStackTrace();
+        }finally {
+            connect.close();
+        }
+        return report;
+    }
 }

@@ -17,6 +17,7 @@ import sop.search.dao.impl.ReportDAOImpl;
 import sop.search.dto.ReportDTO;
 import sop.search.entities.Account;
 import sop.search.entities.Report;
+import sop.search.service.AccountService;
 
 
 /**
@@ -54,12 +55,51 @@ public class AccountController extends HttpServlet {
             case "editReport":
                 editReport(request, response);
                 break;
+            case "signup":
+                signUp(request, response);
+                break;
             default:
                 break;
         }
 	}
 
-	/**
+	private void signUp(HttpServletRequest request, HttpServletResponse response)
+    {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String fullname = request.getParameter("fullname");
+        //String permission = request.getParameter("permission");
+        String email = request.getParameter("email");
+        if(username == null || password == null || email == null) {
+            try {
+                response.sendRedirect("http://localhost:8080/SearchReport/view/sign-up.jsp?error=true");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }else {
+            AccountService accountService = new AccountService();
+            boolean check = accountService.signUP(username, password, false, email, fullname);
+            if(!check) {
+                try {
+                    response.sendRedirect("http://localhost:8080/SearchReport/view/sign-up.jsp?error=true");
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }else {
+                try {
+                    response.sendRedirect("http://localhost:8080/SearchReport/view/login.jsp");
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+    }
+
+    /**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

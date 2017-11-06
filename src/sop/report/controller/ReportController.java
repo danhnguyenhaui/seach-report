@@ -2,6 +2,9 @@ package sop.report.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,6 +18,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tomcat.util.http.fileupload.util.Streams;
 
 import sop.report.context.ServletContextListennerImpl;
 import sop.search.dao.ReportDAO;
@@ -50,17 +54,40 @@ public class ReportController extends HttpServlet {
 	    String action = request.getParameter("action");
 	    if(action == null) action = "view";
         System.out.println("ACTION : " + action);
+        System.out.println("GET METHOD: " + response.getCharacterEncoding());
+        System.out.println("GET METHOD: " + response.getContentType());
+        System.out.println("GET METHOD: " + request.getCharacterEncoding());
+        System.out.println("GET METHOD: " + request.getContentType());
         switch (action)
         {
             case "search":
                 searchReport(request, response);
+                break;
+            case "viewReportDetail":
+                view(request, response);
+                break;
+            case "download":
+                download(request, response);
                 break;
             default:
                 break;
         }
 	}
 
-	private void searchReport(HttpServletRequest request, HttpServletResponse response)
+	private void download(HttpServletRequest request, HttpServletResponse response)
+    {
+        String fileName = request.getParameter("fileName");
+        try {
+            FileUtility.download(response, fileName);
+            //view(request, response);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+
+    private void searchReport(HttpServletRequest request, HttpServletResponse response)
     {
         String searchText = request.getParameter("searchText");
         if(searchText != null) {
@@ -83,9 +110,13 @@ public class ReportController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		setFieldList(request);
+	    setFieldList(request);
 	    String action = getAction();
 		System.out.println("ACTION : " + action);
+		System.out.println("POST METHOD: " + response.getCharacterEncoding());
+        System.out.println("POST METHOD: " + response.getContentType());
+        System.out.println("POST METHOD: " + request.getCharacterEncoding());
+        System.out.println("POST METHOD: " + request.getContentType());
 		switch (action)
         {
             case "upload":
@@ -114,6 +145,7 @@ public class ReportController extends HttpServlet {
                     case "reportName":
                         report.setReportName(item.getString());
                         break;
+                        
                     case "categoryID":
                         report.setCategoryID(Integer.parseInt(item.getString()));
                         break;
@@ -150,14 +182,29 @@ public class ReportController extends HttpServlet {
 	}
 	
 	private void setFieldList(HttpServletRequest request) {
+	    System.out.println("ContextPath: "+request.getContextPath()+ ", CharacterEncoding="+request.getCharacterEncoding());
 	    try {
 	        uploader = new ServletFileUpload(new DiskFileItemFactory());
-            fieldList = uploader.parseRequest(request);
+	        fieldList = uploader.parseRequest(request);
         } catch (FileUploadException e) {
             fieldList = null;
             e.printStackTrace();
         }
 	    
+	}
+	void view(HttpServletRequest request, HttpServletResponse response) {
+	    String reportID = request.getParameter("reportID");
+	    if(reportID != null) {
+	        ReportDAO reportDAO = new ReportDAOImpl();
+	        ReportDTO reportDTO = reportDAO.findByReportDTOID(Integer.parseInt(reportID));
+	        request.setAttribute("report", reportDTO);
+	        try {
+                request.getRequestDispatcher("view/view-detailed-report.jsp").forward(request, response);
+            } catch (ServletException | IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            };
+	    }
 	}
 	private void upload() {
 	    Report report = new Report();
@@ -169,14 +216,30 @@ public class ReportController extends HttpServlet {
                         report.setAccountID(Integer.parseInt(item.getString().trim()));
                         break;
                     case "reportName":
-                        report.setReportName(item.getString());
-                        break;
+                        try {
+                            InputStream is = item.getInputStream();
+                            String reportName = Streams.asString(is, "UTF-8");
+                            report.setReportName(reportName);
+                            break;
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
                     case "categoryID":
                         report.setCategoryID(Integer.parseInt(item.getString()));
                         break;
                     case "description":
-                        report.setDescription(item.getString());
-                        break;
+                        try {
+                            InputStream is = item.getInputStream();
+                            String description = Streams.asString(is, "UTF-8");
+                            report.setDescription(description);
+                            break;
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        
                     case "reportID":
                         report.setReportID(Integer.parseInt(item.getString()));
                         break;
@@ -185,6 +248,7 @@ public class ReportController extends HttpServlet {
                 }
 	        }
 	    }
+	    System.out.println(report);
 	    ReportService reportService = new ReportService();
 	    reportService.insertAndUploadReport(report, fieldList);
 	}

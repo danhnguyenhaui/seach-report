@@ -25,7 +25,7 @@
 				<h5 class="card-title">Tải báo cáo lên server</h5>
 			</div>
 			<div class="card-body">
-				<form class="mx-5 my-5" action="../ReportController" enctype="multipart/form-data" method="post">
+				<form class="mx-5 my-5" action="../ReportController" enctype="multipart/form-data" method="post" accept-charset="UTF-8">
 					<div class="form-group">
 						<label for="reportName">Tên báo cáo</label> 
 						<input type="text" class="form-control" id="reportName" name="reportName"> 
