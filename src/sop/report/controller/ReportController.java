@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -24,6 +26,7 @@ import sop.report.context.ServletContextListennerImpl;
 import sop.search.dao.ReportDAO;
 import sop.search.dao.impl.ReportDAOImpl;
 import sop.search.dto.ReportDTO;
+import sop.search.dto.ReportIDDTO;
 import sop.search.entities.Report;
 import sop.search.service.ReportService;
 import sop.search.utility.FileUtility;
@@ -68,6 +71,7 @@ public class ReportController extends HttpServlet {
                 break;
             case "download":
                 download(request, response);
+                increaseDownload(request);
                 break;
             default:
                 break;
@@ -87,6 +91,14 @@ public class ReportController extends HttpServlet {
         
     }
 
+	private void increaseDownload(HttpServletRequest request) {
+	    String reportID = request.getParameter("reportID");
+	    ReportDAO reportDAO = new ReportDAOImpl();
+	    Report report = new Report();
+	    report = reportDAO.findByReportID(Integer.parseInt(reportID));
+	    report.setNumberOfDownload(report.getNumberOfDownload() + 1);
+	    reportDAO.update(report);
+	}
     private void searchReport(HttpServletRequest request, HttpServletResponse response)
     {
         String searchText = request.getParameter("searchText");
@@ -125,6 +137,7 @@ public class ReportController extends HttpServlet {
                 break;
             case "editReport":
                 editReport(response);
+                response.sendRedirect("http://localhost:8080/SearchReport/accountController?action=my-report-list&upload=success");
                 break;
             default:
                 break;
@@ -198,6 +211,13 @@ public class ReportController extends HttpServlet {
 	        ReportDAO reportDAO = new ReportDAOImpl();
 	        ReportDTO reportDTO = reportDAO.findByReportDTOID(Integer.parseInt(reportID));
 	        request.setAttribute("report", reportDTO);
+	        Report report = new Report();
+	        boolean check = checkViewedReportSession(request);
+	        if(!check) {
+	            report = reportDAO.findByReportID(Integer.parseInt(reportID));
+	            report.setNumberOfView(report.getNumberOfView() + 1);
+	            reportDAO.update(report);
+	        }
 	        try {
                 request.getRequestDispatcher("view/view-detailed-report.jsp").forward(request, response);
             } catch (ServletException | IOException e) {
@@ -205,6 +225,25 @@ public class ReportController extends HttpServlet {
                 e.printStackTrace();
             };
 	    }
+	}
+	private boolean checkViewedReportSession(HttpServletRequest request) {
+	    ReportDAO reportDAO = new ReportDAOImpl();
+	    String reportID = request.getParameter("reportID");
+	    ReportIDDTO reportIDDTO = new ReportIDDTO(Integer.parseInt(reportID));
+	    HttpSession session = request.getSession();
+	    List<ReportIDDTO> listViewedReportID = (List<ReportIDDTO>)session.getAttribute("VIEWED_REPORTS");
+	    if(listViewedReportID == null) listViewedReportID = new ArrayList<ReportIDDTO>();
+	    if(listViewedReportID.size() > 0) {
+	        for(ReportIDDTO r : listViewedReportID) {
+	            if(r.equals(reportIDDTO)) {
+	                return true;
+	            }
+	        }
+	    }
+	    listViewedReportID.add(new ReportIDDTO(Integer.parseInt(reportID)));
+	    session.setAttribute("VIEWED_REPORTS", listViewedReportID);
+	    System.out.println("Viewed Report List: " + listViewedReportID);
+	    return false;
 	}
 	private void upload() {
 	    Report report = new Report();

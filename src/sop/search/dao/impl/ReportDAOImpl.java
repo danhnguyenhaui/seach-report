@@ -175,6 +175,7 @@ public class ReportDAOImpl implements ReportDAO
             connect.getSqlUpdateReport().setString(4, report.getDescription());
             connect.getSqlUpdateReport().setInt(5, report.getNumberOfView());
             connect.getSqlUpdateReport().setInt(6, report.getNumberOfDownload());
+            connect.getSqlUpdateReport().setInt(7, report.getReportID());
             connect.getSqlUpdateReport().executeUpdate();
             connect.commit();
         } catch (SQLException e) {

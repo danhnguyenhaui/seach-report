@@ -52,10 +52,21 @@
 		</form>
 		<div class="d-inline">
 			<ul class="navbar-nav mr-auto mt-2 mt-md-0 ml-2">
-				<li class="nav-item"><a class="nav-link" href="#">Đăng ký</a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="http://localhost:8080/SearchReport/view/login.jsp">Đăng
-						nhập</a></li>
+				<li class="nav-item"><a class="nav-link" href="http://localhost:8080/SearchReport/view/sign-up.jsp">Đăng ký</a></li>
+				<c:choose>
+					<c:when test="${sessionScope['ACCOUNT'] eq null }">
+						<li class="nav-item">
+							<a class="nav-link"
+							href="http://localhost:8080/SearchReport/view/login.jsp">Đăng nhập</a>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="nav-item">
+							<a class="nav-link"
+							href="http://localhost:8080/SearchReport/accountController?action=logout">Đăng xuất</a>
+						</li>
+					</c:otherwise>
+				</c:choose>
 			</ul>
 		</div>
 

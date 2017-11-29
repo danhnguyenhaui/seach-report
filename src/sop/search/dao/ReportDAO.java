@@ -19,4 +19,5 @@ public interface ReportDAO
     ReportDTO findByReportDTOID(int reportID);
     List<ReportDTO> orderByQuery(String query);
     List<ReportDTO> findByReportNameAndDescription(String repportName, String description);
+    
 }

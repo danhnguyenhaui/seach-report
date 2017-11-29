@@ -7,7 +7,7 @@ $(document).ready(function(){
 	
 	// set background for search text
 	var searchText = $('.search-input').val();
-	console.log(searchText);
+	//console.log(searchText);
 	if(searchText != null && searchText != ''){
 		$('.paragraph:contains("'+ searchText +'")').each(function(){
 	        $(this).html( 

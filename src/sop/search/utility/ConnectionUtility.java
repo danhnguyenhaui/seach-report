@@ -62,8 +62,8 @@ public class ConnectionUtility
                     "insert into report(account_id, category_id, reportname, description)"
                     + " values(?, ?, ?, ?)");
             sqlUpdateReport = connection.prepareStatement(
-                    "update report set account_id = ?, category_id = ?, reportname = ?"
-                    + " description = ?, number_of_view = ?, number_of_download = ?");
+                    "update report set account_id = ?, category_id = ?, reportname = ?,"
+                    + " description = ?, number_of_view = ?, number_of_download = ? Where report_id = ?");
             sqlFindLastestReport = connection.prepareStatement(
                     "select * from report where report_id = "
                     + "(select MAX(report_id) from report)");

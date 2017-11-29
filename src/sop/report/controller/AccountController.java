@@ -40,6 +40,7 @@ public class AccountController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    String action = request.getParameter("action");
+	    System.out.println(action);
         switch (action)
         {
             case "login":
@@ -55,8 +56,13 @@ public class AccountController extends HttpServlet {
             case "editReport":
                 editReport(request, response);
                 break;
-            case "signup":
+            case "signUp":
                 signUp(request, response);
+                break;
+            case "logout":
+                HttpSession session = request.getSession();
+                session.removeAttribute("ACCOUNT");
+                response.sendRedirect("http://localhost:8080/SearchReport/view/login.jsp");
                 break;
             default:
                 break;

@@ -5,6 +5,7 @@ import java.io.File;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSession;
 
 import sop.search.dao.CategoryDAO;
 import sop.search.dao.impl.CategoryDAOImpl;
@@ -31,6 +32,8 @@ public class ServletContextListennerImpl implements ServletContextListener
         
         // set realPath
         context.setAttribute("REAL_PATH", context.getRealPath("/"));
+        
+        
     }
     
 }
